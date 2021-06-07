@@ -34,7 +34,7 @@ function Contacts(props: RouterProps) {
         const term = e.target.value;
         dispatch(setSearchTerm(term))
     }
-
+  
     return (
       <div id='contacts'>
         <div className='toolbar'>
@@ -46,16 +46,20 @@ function Contacts(props: RouterProps) {
           </div>
         </div>
         <section>
-          <h4>Active Users</h4>
+          <h2 className='subtitle'>Active Users</h2>
           <div className='contact-wrapper'>
-              <ContactList contacts={activeContacts} />
+              {
+                !isEmpty(activeContacts)
+                ? <ContactList contacts={activeContacts} />
+                : <div className='no-data'>No data available</div>
+              }
           </div>
         </section>
         <section>
-            <h4>Inactive Users</h4>
-            <div className='contact-wrapper'>
-              <ContactList contacts={inactiveContacts} disabled />
-            </div>
+          <h2 className='subtitle'>Inactive Users</h2>
+          <div className='contact-wrapper'>
+            <ContactList contacts={inactiveContacts} disabled />
+          </div>
         </section>
       </div>
     )

@@ -17,6 +17,20 @@
     }
   }
 
+  .subtitle {
+    font-weight: bolder;
+    margin: 2rem 0;
+  }
+
+  .no-data {
+    height: 50vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+  }
+
   .contact-wrapper {
     border: 1px solid black;
 
