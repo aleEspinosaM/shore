@@ -1,0 +1,65 @@
+#contacts {
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(223, 219, 219);
+  padding: 1rem 2rem;
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    &-input {
+      width: 80vw;
+    }
+    &-button {
+      margin-top: 1rem;
+    }
+  }
+
+  .contact-wrapper {
+    border: 1px solid black;
+
+    .contact {
+      padding: 0 1rem;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid black;
+      background-color: white;
+      cursor: pointer;
+      &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .avatar-container {
+        position: relative;
+        .avatar {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          object-fit: contain;
+        }
+        .online-marker {
+          width: 10px;
+          height: 10px;
+          background-color: chartreuse;
+          border-radius: 50%;
+          position: absolute;
+          top: 3rem;
+          left: 2rem;
+        }
+      }
+      .department {
+        text-transform: capitalize;
+      }
+    }
+  }
+
+}
