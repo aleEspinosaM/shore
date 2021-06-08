@@ -13,12 +13,12 @@ interface Props
     classnames?: string;
 }
 
-export default function input(props: Props) {
+export default function Input(props: Props) {
     return (
-        <div className={`input-wrapper ${props.className}`}>
+        <div className='input-wrapper'>
             {props.label ? <label htmlFor='input'>{props.label}</label> : null}
             {props.withIcon ? <FaSearch  className='search-icon'/> : null}
-            <input {...omit(props, 'withIcon', 'label')}/>
+            <input className={props.className} {...omit(props, 'withIcon', 'label')}/>
         </div>
     )
 }

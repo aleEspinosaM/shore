@@ -1,0 +1,79 @@
+.radioInput {
+    color: black;
+    box-sizing: content-box !important; // Override global box-sizing from some apps
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    margin: .25rem 0;
+    font-size: 1.15rem;
+
+    .radioInput_check {
+        height: 16px;
+        width: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &::before {
+            height: 8px;
+            width: 8px;
+        }
+    }
+
+    input[type=radio] {
+        position: absolute;
+        visibility: hidden;
+    }
+
+
+    &:hover {
+        .hoverBackground {
+            background-color: rgba(4, 148, 4, 0.1);
+        }
+    }
+
+    &:active {
+        .hoverBackground {
+            background-color: rgba(4, 148, 4, 0.5);
+        }
+    }
+
+    &_check {
+        box-sizing: content-box !important; // Override global box-sizing from some apps
+        display: block;
+        position: relative;
+        border: 2px solid black;
+        border-radius: 100%;
+        margin-right: 0.8rem;
+    }
+
+    &_check::before {
+        box-sizing: content-box !important; // Override global box-sizing from some apps
+        display: block;
+        position: absolute;
+        content: '';
+        border-radius: 100%;
+    }
+
+    input[type=radio]:checked ~ &_check {
+        border: 2px solid rgb(4, 148, 4);
+    }
+
+    input[type=radio]:checked ~ &_check::before{
+        background: rgb(4, 148, 4);
+    }
+
+}
+
+.hoverBackground {
+    box-sizing: content-box !important; // Override global box-sizing from some apps
+    background-color: transparent;
+    position: absolute;
+    border-radius: 50%;
+    left: -6px;
+    width: 32px;
+    height: 32px;
+}

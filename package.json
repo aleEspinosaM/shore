@@ -17,6 +17,7 @@
     "lodash": "^4.17.21",
     "node-sass": "4.14.1",
     "react": "^17.0.2",
+    "react-currency-input-field": "^3.4.1",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-modal": "^3.14.2",
@@ -48,6 +49,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.170",
+    "@types/react-modal": "^3.12.0",
     "@types/react-router-dom": "^5.1.7"
   }
 }

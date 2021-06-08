@@ -1,0 +1,73 @@
+.modal {
+    position: absolute;
+    top: 40px;
+    left: 30%;
+    width: 600px;
+    background-color: white;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(10, 10, 10, 0.5);
+}
+
+.contact-modal {
+    padding: 2rem;
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        button {
+            background-color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+    }
+    .contact-input {
+        border: 1px solid gray;
+        padding: 5px;
+    }
+    footer {
+        display: flex;
+        justify-content: flex-end;
+        div {
+            margin: 0 1rem;
+        }
+    }
+}
+
+.form-section {
+    margin-top: 1rem;
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .half-width {
+            width: 45%;
+            margin-right: 10px;
+        }
+    }
+    .error-block {
+        font-size: .7rem;
+        color: red;
+    }
+    .radio-container {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+
+    }
+
+}
+
+.select, .money-input {
+    height: 40px;
+    border-radius: 10px;
+    width: 240px;
+}

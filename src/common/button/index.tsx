@@ -1,5 +1,6 @@
 import React from 'react'
 import { omit } from 'lodash'
+import cx from 'classnames'
 import './button.scss'
 
 
@@ -9,12 +10,13 @@ export interface Props extends React.DetailedHTMLProps<
     > 
 {
     className?: string;
+    disabled?: boolean
 }
 
 
 export default function Button(props: Props) {
     return (
-        <button className={`button-custom ${props.className}`} {...omit(props,'children')}>
+        <button disabled={props.disabled} className={cx('button-custom',{disabled: props.disabled})} {...omit(props,'children')}>
             {props.children}
         </button>
     )

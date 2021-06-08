@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
 import { RouterProps } from 'react-router'
 import {
-    fetchContacts, IContact, setSearchTerm,
+    fetchContacts, IContact, setSearchTerm, toogleContactForm,
 } from './contactsSlice';
 import './Contacts.scss'
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import Input from '../../common/input'
 import ContactList from './ContactList';
 import Button from '../../common/button';
-import { isEmpty } from 'lodash';
+import { isEmpty, omit } from 'lodash';
+import ContactForm from './ContactForm';
 
 function Contacts(props: RouterProps) {
     const filterTerm = (contacts: IContact[], searchTerm:string): IContact[] => {
@@ -24,6 +25,7 @@ function Contacts(props: RouterProps) {
         filterTerm(state.contacts.data.filter(d => d.is_active), state.contacts.searchTerm) 
     )
     const inactiveContacts = useAppSelector(state => state.contacts.data.filter(d => !d.is_active))
+    const { displayContactForm } = useAppSelector(state => omit(state.contacts, 'data'))
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -34,34 +36,39 @@ function Contacts(props: RouterProps) {
         const term = e.target.value;
         dispatch(setSearchTerm(term))
     }
-  
+    
     return (
-      <div id='contacts'>
-        <div className='toolbar'>
-          <div>
-            <Input onChange={onChange} className='toolbar-input' placeholder='Search Contacts' label='' withIcon={true} />
+      <>
+        <div id='contacts'>
+          <div className='toolbar'>
+            <div>
+              <Input onChange={onChange} className='toolbar-input' placeholder='Search Contacts' label='' withIcon={true} />
+            </div>
+            <div className='toolbar-button'>
+              <Button onClick={() => dispatch(toogleContactForm())}>+ Add Contact</Button>
+            </div>
           </div>
-          <div className='toolbar-button'>
-            <Button onClick={() => console.log('akuu')}>+ Add Contact</Button>
-          </div>
+          <section>
+            <h2 className='subtitle'>Active Users</h2>
+            <div className='contact-wrapper'>
+                {
+                  !isEmpty(activeContacts)
+                  ? <ContactList contacts={activeContacts} />
+                  : <div className='no-data'>No data available</div>
+                }
+            </div>
+          </section>
+          <section>
+            <h2 className='subtitle'>Inactive Users</h2>
+            <div className='contact-wrapper'>
+              <ContactList contacts={inactiveContacts} disabled />
+            </div>
+          </section>
         </div>
-        <section>
-          <h2 className='subtitle'>Active Users</h2>
-          <div className='contact-wrapper'>
-              {
-                !isEmpty(activeContacts)
-                ? <ContactList contacts={activeContacts} />
-                : <div className='no-data'>No data available</div>
-              }
-          </div>
-        </section>
-        <section>
-          <h2 className='subtitle'>Inactive Users</h2>
-          <div className='contact-wrapper'>
-            <ContactList contacts={inactiveContacts} disabled />
-          </div>
-        </section>
-      </div>
+        {displayContactForm && (
+          <ContactForm />
+        )}
+      </>
     )
 }
 
