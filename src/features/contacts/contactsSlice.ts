@@ -1,4 +1,4 @@
-import { getAllContacts, postContact } from './api';
+import { getAllContacts, postContact, putContact } from './api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type Department = 'it' | 'marketing' | 'sales' | 'support';
@@ -19,8 +19,10 @@ export interface ContactState {
   total: number;
   status: 'idle' | 'loading' | 'failed' | 'success';
   postinContact: 'idle' | 'loading' | 'failed' | 'success';
+  updatinContact: 'idle' | 'loading' | 'failed' | 'success';
   searchTerm: string;
   displayContactForm: boolean;
+  setContact?: IContact | null;
 }
 
 const initialState: ContactState = {
@@ -30,6 +32,8 @@ const initialState: ContactState = {
   searchTerm: '',
   displayContactForm: false,
   postinContact: 'idle',
+  updatinContact: 'idle',
+  setContact: null,
 };
 
 export const fetchContacts = createAsyncThunk(
@@ -49,6 +53,14 @@ export const createContacts = createAsyncThunk(
   }
 );
 
+export const updateContacts = createAsyncThunk(
+  'contacts/updateContacts',
+  async (contact: any) => {
+    const response = await putContact(contact);
+    return response.data
+  }
+);
+
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
@@ -58,7 +70,14 @@ export const contactsSlice = createSlice({
     },
     toogleContactForm: (state) => {
       state.displayContactForm = !state.displayContactForm
-    }
+    },
+    resetContact: (state) => {
+      state.setContact = null;
+    },
+    setContact: (state, action: PayloadAction<IContact | null>) => {
+      state.setContact = action.payload;
+      state.displayContactForm = !state.displayContactForm;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -83,7 +102,6 @@ export const contactsSlice = createSlice({
         state.postinContact = 'loading'
       })
       .addCase(createContacts.fulfilled, (state, action) => {
-        console.log(action.payload)
         const newContact = {
           ...action.payload,
           is_online: action.payload?.is_online || true,
@@ -96,9 +114,27 @@ export const contactsSlice = createSlice({
         state.data.push(newContact)
         state.displayContactForm = false
       })
+      .addCase(updateContacts.pending, (state) => {
+        state.updatinContact = 'loading'
+      })
+      .addCase(updateContacts.fulfilled, (state, action) => {
+        const newContact = {
+          ...action.payload,
+          is_online: action.payload?.is_online || true,
+          is_active: action.payload?.is_active || true,
+          department: action.payload?.department || 'Marketing',
+          amount: action.payload?.amount || 12 * Math.floor(Math.random() * 10),
+        }
+        state.updatinContact = 'success';
+        state.data = state.data.map((d) =>
+            d.id === action.payload.id ? newContact : d,
+        );
+        state.displayContactForm = false
+        state.setContact = null
+      })
   },
 });
 
-export const { setSearchTerm, toogleContactForm } = contactsSlice.actions;
+export const { setSearchTerm, toogleContactForm, setContact, resetContact } = contactsSlice.actions;
 
 export default contactsSlice.reducer;

@@ -1,6 +1,7 @@
 import React from 'react'
-import { IContact } from './contactsSlice'
+import { IContact, setContact } from './contactsSlice'
 import cx from 'classnames'
+import { useAppDispatch } from '../../app/hooks';
 
 export default function ContactList({ 
     contacts, 
@@ -10,11 +11,12 @@ export default function ContactList({
     IContact[], 
     disabled?: boolean
 }): JSX.Element {
+    const dispatch = useAppDispatch();
     return (
         <>
             {contacts.map((c) => {
                 return (
-                    <div key={`${c.first_name}-${c.last_name}`} className={cx('contact',{disabled: disabled})}>
+                    <div onClick={() => {dispatch(setContact(c))}} key={`${c.first_name}-${c.last_name}`} className={cx('contact',{disabled: disabled})}>
                         <div className='avatar-container'>
                             <img alt='avatar' className='avatar' src={c.avatar} />
                             {c.is_online ? <span className='online-marker' /> : null}

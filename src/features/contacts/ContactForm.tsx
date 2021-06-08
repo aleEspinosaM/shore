@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ReactModal, { setAppElement } from 'react-modal';
-import { useAppDispatch } from '../../app/hooks';
-import { createContacts, IContact, toogleContactForm } from './contactsSlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { createContacts, IContact, resetContact, toogleContactForm, updateContacts } from './contactsSlice';
 import './ContactForm.scss'
 import Input from '../../common/input';
 import { isValidEmail, isValidName } from './validators';
@@ -9,7 +9,6 @@ import Radio from '../../common/radio';
 import CurrencyInput from 'react-currency-input-field';
 import Checkbox from '../../common/checkbox';
 import Button from '../../common/button';
-import { isEmpty } from 'lodash';
 
 setAppElement('#root')
 
@@ -30,21 +29,22 @@ export default function ContactForm({
     contact?: IContact;
 }) {
     const dispatch = useAppDispatch();
+    const { setContact, updatinContact, postinContact} = useAppSelector(state => state.contacts)
     const fieldToValidate = ['first_name', 'last_name', 'email']
     const [values, setValues] = useState({
         first_name: {
-            value: '',
-            touched: false,
+            value: setContact?.first_name || '',
+            touched: setContact?.first_name ? true : false,
             error: false
         },
         last_name: {
-            value: '',
-            touched: false,
+            value: setContact?.last_name ||'',
+            touched: setContact?.last_name ?true : false,
             error: false
         },
         email: {
-            value: '',
-            touched: false,
+            value: setContact?.email ||'',
+            touched: setContact?.email ?true : false,
             error: false
         },
         gender: {
@@ -88,29 +88,42 @@ export default function ContactForm({
             first_name: first_name.value,
             last_name: last_name.value,
             email: email.value,
+            ...(setContact?.id ? { id: setContact.id } : {}),
+            ...(setContact?.id ? { avatar: setContact.avatar } : {}),
         }
-        dispatch(createContacts(payload))
+        if (setContact?.id) {
+            dispatch(updateContacts(payload))
+        } else {
+            dispatch(createContacts(payload))
+        }
+    }
+
+    const onClose = () => {
+        dispatch(toogleContactForm())
+        if (setContact?.id) {
+            dispatch(resetContact())
+        }
     }
 
     const isValidFirstName = !(!!values.first_name.error || !values.first_name.touched)
     const isvalidLastName = !(!!values.last_name.error || !values.last_name.touched)
     const isValidEmail = !(!!values.email.error || !values.email.touched)
 
-    const isDisabled = !isValidEmail || !isValidFirstName || !isvalidLastName
+    const isDisabled = !isValidEmail || !isValidFirstName || !isvalidLastName || postinContact === 'loading' || updatinContact === 'loading'
     
     return (
         <ReactModal
             isOpen={true}
-            onRequestClose={() => dispatch(toogleContactForm())}
+            onRequestClose={onClose}
             className="modal"
             overlayClassName="overlay"
         >
             <div className='contact-modal'> 
                 <header className='header'>
                     <h3>
-                        {contact?.first_name ? 'Edit contact' : 'Add contact'}
+                        {setContact?.id ? `Edit contact "${setContact.first_name} ${setContact.last_name}"` : 'Add contact'}
                     </h3>
-                    <button onClick={() => dispatch(toogleContactForm())}>X</button>
+                    <button onClick={onClose}>X</button>
                 </header>
                 <section className='form-section'>
                     <form onSubmit={handleSubmit}>
@@ -191,13 +204,14 @@ export default function ContactForm({
                                     <select 
                                         className='select' 
                                         value={values.department.value} 
+                                        name='department'
                                         onChange={(e) => handleChangeCustom(e.target.value, e.target.name)}
                                     >
                                         <option value=''>Select Department</option>
-                                        <option value="it">Grapefruit</option>
-                                        <option value="marketing">Lime</option>
-                                        <option value="sales">Coconut</option>
-                                        <option value="support">Mango</option>
+                                        <option value="it">IT</option>
+                                        <option value="marketing">Marketing</option>
+                                        <option value="sales">Sales</option>
+                                        <option value="support">Support</option>
                                     </select>
                                 </label>
                             </div>
@@ -226,7 +240,7 @@ export default function ContactForm({
                         </div>
                         <footer>
                             <div>
-                                <Button onClick={() => dispatch(toogleContactForm())}> Cancel </Button>
+                                <Button onClick={onClose}> Cancel </Button>
                             </div>
                             <div>
                                 <Button disabled={isDisabled} type='submit'> Save </Button>
